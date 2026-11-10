@@ -10,45 +10,20 @@ typedef enum {
 } hcsr04_state_t;
 
 static volatile hcsr04_state_t state = HCSR04_IDLE;
-static volatile uint16_t start_tick = 0;
+static uint16_t first = 0;
 static volatile uint16_t pulse_us = 0;
-
-static void hcsr04_set_edge(GPIO_PinState pin_state)
-{
-    if (pin_state == GPIO_PIN_SET) {
-        EXTI->RTSR &= ~HCSR04_ECHO_Pin;
-        EXTI->FTSR |= HCSR04_ECHO_Pin;
-    } else {
-        EXTI->FTSR &= ~HCSR04_ECHO_Pin;
-        EXTI->RTSR |= HCSR04_ECHO_Pin;
-    }
-}
 
 bool hcsr04_init(void)
 {
-    if (HAL_TIM_Base_Start(&htim3) != HAL_OK) {
-        return false;
-    }
+    EXTI->FTSR &= ~EXTI_FTSR_TR1;
+    EXTI->RTSR |= EXTI_RTSR_TR1;
 
-    HAL_GPIO_WritePin(HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin, GPIO_PIN_RESET);
-
-    hcsr04_set_edge(HAL_GPIO_ReadPin(HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin));
-
-    return true;
+    return HAL_TIM_Base_Start(&htim3) == HAL_OK;
 }
 
-bool hcsr04_trigger(void)
+void hcsr04_trigger(void)
 {
-    if (state == HCSR04_WAIT_RISING || state == HCSR04_WAIT_FALLING) {
-        return false;
-    }
-
-    if (HAL_GPIO_ReadPin(HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin) != GPIO_PIN_RESET) {
-        return false;
-    }
-
     state = HCSR04_WAIT_RISING;
-    hcsr04_set_edge(GPIO_PIN_RESET);
 
     HAL_GPIO_WritePin(HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin, GPIO_PIN_SET);
 
@@ -58,8 +33,6 @@ bool hcsr04_trigger(void)
     }
 
     HAL_GPIO_WritePin(HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin, GPIO_PIN_RESET);
-
-    return true;
 }
 
 bool hcsr04_get_distance(float *distance)
@@ -68,22 +41,11 @@ bool hcsr04_get_distance(float *distance)
         return false;
     }
 
-    uint16_t duration = pulse_us;
+    *distance = pulse_us * HCSR04_CM_PER_US;
 
     state = HCSR04_IDLE;
-
-    *distance = duration * HCSR04_CM_PER_US;
 
     return true;
-}
-
-void hcsr04_cancel(void)
-{
-    state = HCSR04_IDLE;
-
-    HAL_GPIO_WritePin(HCSR04_TRIG_GPIO_Port, HCSR04_TRIG_Pin, GPIO_PIN_RESET);
-
-    hcsr04_set_edge(HAL_GPIO_ReadPin(HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin));
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -92,23 +54,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         return;
     }
 
-    GPIO_PinState pin_state = HAL_GPIO_ReadPin(HCSR04_ECHO_GPIO_Port, HCSR04_ECHO_Pin);
-    uint16_t tick = (uint16_t)__HAL_TIM_GET_COUNTER(&htim3);
+    if (state == HCSR04_WAIT_RISING) {
+        first = (uint16_t)__HAL_TIM_GET_COUNTER(&htim3);
+        state = HCSR04_WAIT_FALLING;
 
-    if (pin_state == GPIO_PIN_SET) {
-
-        if (state == HCSR04_WAIT_RISING) {
-            start_tick = tick;
-            state = HCSR04_WAIT_FALLING;
-        }
-
-    } else {
-
-        if (state == HCSR04_WAIT_FALLING) {
-            pulse_us = (uint16_t)(tick - start_tick);
-            state = HCSR04_READY;
-        }
+        EXTI->RTSR &= ~EXTI_RTSR_TR1;
+        EXTI->FTSR |= EXTI_FTSR_TR1;
     }
 
-    hcsr04_set_edge(pin_state);
+    else if (state == HCSR04_WAIT_FALLING) {
+        pulse_us = (uint16_t)(__HAL_TIM_GET_COUNTER(&htim3) - first);
+        state = HCSR04_READY;
+
+        EXTI->FTSR &= ~EXTI_FTSR_TR1;
+        EXTI->RTSR |= EXTI_RTSR_TR1;
+    }
 }

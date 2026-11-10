@@ -1,5 +1,6 @@
-#ifndef APP_CONFIG_H
-#define APP_CONFIG_H
+
+#ifndef CAN_APP_CONFIG_H
+#define CAN_APP_CONFIG_H
 
 #define CAN_ID_ACCEL_X          (0x100)
 #define CAN_ID_ACCEL_Y          (0x101)
@@ -19,10 +20,15 @@
 
 #define ACCEL_LPF_ALPHA         (0.2f)
 
+#define LED_MAX_ACCEL_G         (2.0f)
+
 #define HCSR04_TIMEOUT_MS       (40)
+
+#define DIST_NEAR_CM            (10.0f)
+#define DIST_FAR_CM             (30.0f)
 
 #define BLINK_FAST_MS           (100)
 #define BLINK_MEDIUM_MS         (250)
 #define BLINK_SLOW_MS           (500)
 
- #endif
+#endif

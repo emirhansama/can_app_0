@@ -1,4 +1,3 @@
-
 #ifndef HCSR04_H
 #define HCSR04_H
 
@@ -9,8 +8,7 @@
 #define HCSR04_CM_PER_US            (0.01715f)
 
 bool hcsr04_init(void);
-bool hcsr04_trigger(void);
+void hcsr04_trigger(void);
 bool hcsr04_get_distance(float *distance);
-void hcsr04_cancel(void);
 
 #endif

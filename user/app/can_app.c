@@ -1,65 +1,60 @@
 
 #include "can_app.h"
-#include "lis3dsh.h"
-#include "hcsr04.h"
+#include "accel_task.h"
+#include "distance_task.h"
+#include "led_task.h"
+#include "can_task.h"
+#include "sensor_data.h"
 #include "cmsis_os2.h"
 #include "main.h"
 
-volatile float debug_x = 0;
-volatile float debug_y = 0;
-volatile float debug_z = 0;
-volatile float debug_distance = 0;
+static const osThreadAttr_t accel_task_attr = {
+    .name = "accel_task",
+    .priority = osPriorityNormal,
+    .stack_size = 1024
+};
 
-volatile bool debug_accel_ok = false;
-volatile bool debug_hcsr04_ok = false;
-volatile bool debug_distance_ok = false;
+static const osThreadAttr_t distance_task_attr = {
+    .name = "distance_task",
+    .priority = osPriorityNormal,
+    .stack_size = 1024
+};
+
+static const osThreadAttr_t led_task_attr = {
+    .name = "led_task",
+    .priority = osPriorityBelowNormal,
+    .stack_size = 1024
+};
+
+static const osThreadAttr_t can_task_attr = {
+    .name = "can_task",
+    .priority = osPriorityAboveNormal,
+    .stack_size = 1024
+};
 
 void StartDefaultTask(void *argument)
 {
     (void)argument;
 
-    debug_accel_ok = lis3dsh_check_id();
-
-    if (debug_accel_ok) {
-        debug_accel_ok = lis3dsh_init();
+    if (!sensor_data_init()) {
+        Error_Handler();
     }
 
-    debug_hcsr04_ok = hcsr04_init();
-
-    for (;;) {
-
-        if (debug_accel_ok) {
-            float x, y, z;
-
-            if (lis3dsh_read_xyz(&x, &y, &z) == HAL_OK) {
-                debug_x = x;
-                debug_y = y;
-                debug_z = z;
-            }
-        }
-
-        if (debug_hcsr04_ok && hcsr04_trigger()) {
-
-            uint32_t start = HAL_GetTick();
-            debug_distance_ok = false;
-
-            while (HAL_GetTick() - start < 40) {
-                float distance;
-
-                if (hcsr04_get_distance(&distance)) {
-                    debug_distance = distance;
-                    debug_distance_ok = true;
-                    break;
-                }
-
-                osDelay(1);
-            }
-
-            if (!debug_distance_ok) {
-                hcsr04_cancel();
-            }
-        }
-
-        osDelay(100);
+    if (osThreadNew(accel_task, NULL, &accel_task_attr) == NULL) {
+        Error_Handler();
     }
+
+    if (osThreadNew(distance_task, NULL, &distance_task_attr) == NULL) {
+        Error_Handler();
+    }
+
+    if (osThreadNew(led_task, NULL, &led_task_attr) == NULL) {
+        Error_Handler();
+    }
+
+    if (osThreadNew(can_task, NULL, &can_task_attr) == NULL) {
+        Error_Handler();
+    }
+
+    osThreadExit();
 }
