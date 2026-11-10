@@ -1,7 +1,0 @@
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/CMakeFiles/can_app_0.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/CMakeFiles/edit_cache.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/CMakeFiles/rebuild_cache.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
-C:/Users/emirhan.ucma/Documents/can_app_0/build/Debug/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir

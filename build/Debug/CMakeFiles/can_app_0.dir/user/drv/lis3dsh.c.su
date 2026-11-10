@@ -1,8 +1,0 @@
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:7:26:lis3dsh_read_reg	32	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:24:26:lis3dsh_write_reg	24	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:37:6:lis3dsh_check_id	16	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:46:19:lis3dsh_set_odr	24	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:65:19:lis3dsh_set_bandwidth	24	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:81:6:lis3dsh_init	8	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:99:19:lis3dsh_read_xyz	40	static
-C:/Users/emirhan.ucma/Documents/can_app_0/user/drv/lis3dsh.c:127:19:lis3dsh_set_scale	24	static
