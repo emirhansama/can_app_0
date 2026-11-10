@@ -1,0 +1,2 @@
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/can_task.c:13:6:can_task	48	static
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/can_task.c:36:6:HAL_CAN_RxFifo0MsgPendingCallback	56	static

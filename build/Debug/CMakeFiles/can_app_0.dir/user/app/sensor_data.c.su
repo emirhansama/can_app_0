@@ -1,0 +1,4 @@
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/sensor_data.c:7:6:sensor_data_init	8	static
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/sensor_data.c:14:6:sensor_data_set_accel	24	static
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/sensor_data.c:29:6:sensor_data_set_distance	16	static
+C:/Users/emirhan.ucma/Documents/can_app_0/user/app/sensor_data.c:42:6:sensor_data_get	24	static
