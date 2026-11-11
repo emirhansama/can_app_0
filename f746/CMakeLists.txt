@@ -45,11 +45,22 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-)
+    #application
+    user/app/led_task.c
+    user/app/usb_task.c
+    user/app/can_app.c
+    user/app/can_task.c
+    user/app/can_protocol.c
+    #drivers
+    user/drv/can_comm.c
+    user/drv/usb_comm.c
+    )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    ${CMAKE_CURRENT_SOURCE_DIR}/user/app
+    ${CMAKE_CURRENT_SOURCE_DIR}/user/drv
 )
 
 # Add project symbols (macros)
