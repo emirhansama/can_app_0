@@ -36,9 +36,9 @@ void can_task(void *argument)
         if (osMessageQueueGet(can_request_queue, &request_id, NULL, osWaitForever) == osOK) {
             if (request_id == CAN_ID_ALL) {
                 dlc = CAN_DLC_ALL;
+            } else {
+                dlc = CAN_DLC_FLOAT;
             }
-
-            dlc = CAN_DLC_FLOAT;
 
             can_comm_send_request(request_id, dlc);
         }
