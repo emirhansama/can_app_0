@@ -42,8 +42,8 @@ bool can_protocol_unpack(uint16_t id, const uint8_t *data, can_protocol_data_t *
         {
             decoded.x = (int16_t)can_protocol_read_u16(&data[0]) /1000.f;
             decoded.y = (int16_t)can_protocol_read_u16(&data[2]) /1000.f;
-            decoded.z = (int16_t)can_protocol_read_u16(&data[4]) /10.f;
-            decoded.distance = (int16_t)can_protocol_read_u16(&data[6]) /1000.f;
+            decoded.z = (int16_t)can_protocol_read_u16(&data[4]) /1000.f;
+            decoded.distance = (int16_t)can_protocol_read_u16(&data[6]) /10.f;
         }
         break;
 
